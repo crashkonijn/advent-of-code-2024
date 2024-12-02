@@ -10,4 +10,13 @@ public class Calculator
 
         Console.WriteLine($"Day 2_1: {valid}");
     }
+
+    public static void Run2()
+    {
+        var input = InputReader.Read();
+
+        var valid = input.Count(x => x.IsValidDampened());
+
+        Console.WriteLine($"Day 2_2: {valid}");
+    }
 }

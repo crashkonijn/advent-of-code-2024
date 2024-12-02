@@ -9,3 +9,4 @@ Calculator.Run1();
 Calculator.Run2();
 
 AdventOfCode2024.Day2.Calculator.Run1();
+AdventOfCode2024.Day2.Calculator.Run2();

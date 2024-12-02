@@ -24,21 +24,52 @@ public class InputReader
 
         public Direction Direction => this.GetDirection(this.Numbers[0], this.Numbers[1]);
 
-        public bool IsValid()
+        public bool IsValid() => this.IsValid(this.Numbers);
+
+        public bool IsValidDampened()
         {
-            if (this.Direction == Direction.Stale)
+            if (this.IsValid())
+                return true;
+
+            var tempList = new List<int>();
+            for (var i = 0; i < this.Numbers.Length; i++)
+            {
+                tempList.Clear();
+                tempList.AddRange(this.Numbers);
+                tempList.RemoveAt(i);
+
+                if (this.IsValid(tempList.ToArray()))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool IsValid(int[] numbers)
+        {
+            var direction = this.GetDirection(numbers[0], numbers[1]);
+
+            for (var i = 1; i < numbers.Length; i++)
+            {
+                if (!this.IsValid(direction, numbers[i - 1], numbers[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsValid(Direction initialDir, int a, int b)
+        {
+            var direction = this.GetDirection(a, b);
+            if (direction == Direction.Stale)
                 return this.LogReason(false, "Stale direction");
 
-            for (var i = 1; i < this.Numbers.Length; i++)
-            {
-                var direction = this.GetDirection(this.Numbers[i - 1], this.Numbers[i]);
-                if (direction != this.Direction)
-                    return this.LogReason(false, $"Invalid direction {direction} {this.Direction}");
-                
-                var difference = Math.Abs(this.Numbers[i - 1] - this.Numbers[i]);
-                if (difference > 3)
-                    return this.LogReason(false, $"Invalid difference {difference} ({this.Numbers[i - 1]},{this.Numbers[i]})");
-            }
+            if (direction != initialDir)
+                return this.LogReason(false, $"Invalid direction {direction} {this.Direction} ({a}, {b})");
+
+            var difference = Math.Abs(a - b);
+            if (difference > 3)
+                return this.LogReason(false, $"Invalid difference {difference} ({a}, {b})");
 
             return true;
         }
