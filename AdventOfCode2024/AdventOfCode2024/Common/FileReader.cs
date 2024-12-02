@@ -2,7 +2,7 @@
 
 public class FileReader
 {
-    public string Read(string relativePath)
+    public static string Read(string relativePath)
     {
         var basePath = AppContext.BaseDirectory;
         var filePath = Path.Combine(basePath, relativePath);

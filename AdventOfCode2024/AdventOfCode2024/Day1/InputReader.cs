@@ -6,8 +6,7 @@ public class InputReader
 {
     public Input Read()
     {
-        var reader = new FileReader();
-        var content = reader.Read("Day1_1\\input.txt");
+        var content = FileReader.Read("Day1\\input.txt");
 
         var left = new List<int>();
         var right = new List<int>();
