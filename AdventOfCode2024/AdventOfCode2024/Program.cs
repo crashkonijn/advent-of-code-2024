@@ -1,0 +1,8 @@
+﻿// See https://aka.ms/new-console-template for more information
+
+
+using AdventOfCode2024.Day1_1;
+
+Console.WriteLine("Hello, World!");
+
+Calculator.Run();
