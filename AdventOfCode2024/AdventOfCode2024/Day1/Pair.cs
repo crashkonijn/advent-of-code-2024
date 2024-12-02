@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2024.Day1_1;
+﻿namespace AdventOfCode2024.Day1;
 
 public class Pair
 {

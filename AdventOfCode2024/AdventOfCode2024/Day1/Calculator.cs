@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2024.Day1_1;
+﻿namespace AdventOfCode2024.Day1;
 
 public class Calculator
 {
@@ -26,6 +26,7 @@ public class Calculator
     {
         var input = new InputReader().Read();
 
+        // Create reference dict, optimize for lookup
         var referenceDict = input.Left.ToDictionary(x => x, x => 0);
         input.Right.ForEach(x =>
         {
@@ -35,8 +36,8 @@ public class Calculator
             referenceDict[x]++;
         });
 
+        // Calculate total
         var total = 0;
-
         foreach (var (key, value) in referenceDict)
         {
             total += key * value;
