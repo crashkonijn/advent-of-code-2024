@@ -12,3 +12,4 @@ Console.WriteLine("Hello, World!");
 // AdventOfCode2024.Day2.Calculator.Run2();
 
 Calculator.Run1();
+Calculator.Run2();
