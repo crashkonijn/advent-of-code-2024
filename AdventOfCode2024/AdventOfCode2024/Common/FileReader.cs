@@ -9,4 +9,9 @@ public class FileReader
 
         return File.ReadAllText(filePath);
     }
+
+    public static string[] ReadLines(string relativePath)
+    {
+        return Read(relativePath).Split(Environment.NewLine);
+    }
 }
