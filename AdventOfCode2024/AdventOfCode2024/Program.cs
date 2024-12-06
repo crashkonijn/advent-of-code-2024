@@ -19,3 +19,7 @@ AdventOfCode2024.Day4.Calculator.Run2();
 
 AdventOfCode2024.Day5.Calculator.Run1();
 AdventOfCode2024.Day5.Calculator.Run2();
+
+// AdventOfCode2024.Day6.Calculator.Run1();
+// AdventOfCode2024.Day6.Calculator.Run2();
+AdventOfCode2024.Day6.Calculator.Run2J();
