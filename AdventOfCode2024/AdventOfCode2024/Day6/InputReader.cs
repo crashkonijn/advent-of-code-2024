@@ -85,6 +85,7 @@ public class World
 {
     public Direction InitialDirection { get; set; }
     public Tile InitialPosition { get; set; }
+    public List<string> Visited { get; } = new();
 
     public Tile[,] Tiles { get; set; }
 
@@ -104,38 +105,36 @@ public class World
 
         while (guard.Position != null)
         {
+            // Console.Write("\r{0}   ", i);
+            // i++;
+            // var nextTile = this.GetNextTile(guard.Position, guard.Direction);
+            //
+            // if (nextTile != null && !nextTile.IsWall && nextTile != this.InitialPosition)
+            // {
+            //     nextTile.IsWall = true;
+            //
+            //     var (isLoop, path) = this.IsLoopPosition(guard.Position, guard.Direction);
+            //
+            //     if (isLoop)
+            //     {
+            //         nextTile.IsLoopPosition = true;
+            //         nextTile.LoopPath = path;
+            //
+            //         // this.Print(nextTile, guard.Position, guard.Direction);
+            //     }
+            //
+            //     if (nextTile.Postion == "75,22")
+            //     {
+            //         nextTile.IsLoopPosition = true;
+            //         nextTile.LoopPath = path;
+            //         this.Print(nextTile, guard.Position, guard.Direction);
+            //     }
+            //
+            //     nextTile.IsWall = false;
+            // }
+
             // this.Print(guard);
-
-            if (includeLoops)
-            {
-                // Console.Write("\r{0}   ", i);
-                i++;
-                var nextTile = this.GetNextTile(guard.Position, guard.Direction);
-
-                if (nextTile != null && !nextTile.IsWall && nextTile != this.InitialPosition)
-                {
-                    nextTile.IsWall = true;
-
-                    var (isLoop, path) = this.IsLoopPosition(guard.Position, guard.Direction);
-
-                    if (isLoop)
-                    {
-                        nextTile.IsLoopPosition = true;
-                        nextTile.LoopPath = path;
-
-                        // this.Print(nextTile, guard.Position, guard.Direction);
-                    }
-
-                    if (nextTile.Postion == "75,22")
-                    {
-                        nextTile.IsLoopPosition = true;
-                        nextTile.LoopPath = path;
-                        this.Print(nextTile, guard.Position, guard.Direction);
-                    }
-
-                    nextTile.IsWall = false;
-                }
-            }
+            this.Visited.Add(guard.Position.Postion);
 
             this.Next(guard);
 
@@ -145,7 +144,64 @@ public class World
             guard.Position.VisitedDirections.Add(guard.Direction);
         }
 
-        this.Print(guard);
+        // this.Print(guard);
+
+        if (!includeLoops)
+            return;
+
+        // var testTiles = this.Tiles.Cast<Tile>().Where(t => t.Postion == "75,22").ToArray();
+
+        foreach (var tile in this.Tiles)
+        {
+            if (tile.IsWall)
+                continue;
+
+            tile.IsWall = true;
+            var (isLoop, path) = this.IsLoopPosition(this.InitialPosition, this.InitialDirection);
+
+            if (isLoop)
+            {
+                tile.IsLoopPosition = true;
+                tile.LoopPath = path;
+            }
+
+            // if (tile.Postion == "75,22")
+            // {
+            //     tile.IsLoopPosition = true;
+            //     tile.LoopPath = path;
+            //     this.Print(tile, guard.Position, guard.Direction);
+            // }
+
+            tile.IsWall = false;
+        }
+
+        // // Console.Write("\r{0}   ", i);
+        // i++;
+        // var nextTile = this.GetNextTile(guard.Position, guard.Direction);
+        //
+        // if (nextTile != null && !nextTile.IsWall && nextTile != this.InitialPosition)
+        // {
+        //     nextTile.IsWall = true;
+        //
+        //     var (isLoop, path) = this.IsLoopPosition(guard.Position, guard.Direction);
+        //
+        //     if (isLoop)
+        //     {
+        //         nextTile.IsLoopPosition = true;
+        //         nextTile.LoopPath = path;
+        //
+        //         // this.Print(nextTile, guard.Position, guard.Direction);
+        //     }
+        //
+        //     if (nextTile.Postion == "75,22")
+        //     {
+        //         nextTile.IsLoopPosition = true;
+        //         nextTile.LoopPath = path;
+        //         this.Print(nextTile, guard.Position, guard.Direction);
+        //     }
+        //
+        //     nextTile.IsWall = false;
+        // }
     }
 
 
@@ -168,22 +224,9 @@ public class World
         }
 
         GetVisitedList(tile).Add(direction);
-        // visited[this.GetTurnDirection(direction)].Add(tile);
-
-
-        var nextTile = this.GetNextTile(guard.Position, this.GetTurnDirection(direction));
-
-        if (nextTile == null)
-            return (false, visited);
-
-        // if (nextTile.IsWall)
-        //     return (false, visited);
 
         while (true)
         {
-            var dir = guard.Direction;
-            var pos = guard.Position;
-
             this.Next(guard);
 
             if (guard.Position == null)
@@ -195,13 +238,39 @@ public class World
                 return (true, visited);
 
             list.Add(guard.Direction);
-
-            if (guard.Direction != dir)
-                GetVisitedList(pos).Add(guard.Direction);
-
-            // if (guard.Position == tile)
-            //     return true;
         }
+
+        // // var nextTile = this.GetNextTile(guard.Position, this.GetTurnDirection(direction));
+        // //
+        // // if (nextTile == null)
+        // //     return (false, visited);
+        //
+        // // if (nextTile.IsWall)
+        // //     return (false, visited);
+        //
+        // while (true)
+        // {
+        //     var dir = guard.Direction;
+        //     var pos = guard.Position;
+        //
+        //     this.Next(guard);
+        //
+        //     if (guard.Position == null)
+        //         return (false, visited);
+        //
+        //     var list = GetVisitedList(guard.Position);
+        //
+        //     if (list.Contains(guard.Direction))
+        //         return (true, visited);
+        //
+        //     list.Add(guard.Direction);
+        //
+        //     if (guard.Direction != dir)
+        //         GetVisitedList(pos).Add(guard.Direction);
+        //
+        //     // if (guard.Position == tile)
+        //     //     return true;
+        // }
     }
 
     public Tile[] GetLoops()
@@ -230,7 +299,7 @@ public class World
         if (nextTile.IsWall)
         {
             this.Turn(guard);
-            guard.Position = this.GetNextTile(guard.Position, guard.Direction);
+            // guard.Position = this.GetNextTile(guard.Position, guard.Direction);
             return;
         }
 
