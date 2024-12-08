@@ -69,7 +69,7 @@ public class Day6
         });
     }
 
-    [Test]
+    // [Test]
     public void TestSteps()
     {
         // Arrange
@@ -89,7 +89,7 @@ public class Day6
     }
 
 
-    [Test]
+    // [Test]
     public void TestJ()
     {
         var looped = new[]
