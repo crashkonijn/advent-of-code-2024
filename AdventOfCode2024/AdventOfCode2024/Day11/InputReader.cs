@@ -17,10 +17,7 @@ public class InputReader
 
         foreach (var number in line.Split(" "))
         {
-            data.Stones.Add(new Stone
-            {
-                Number = int.Parse(number),
-            });
+            data.AddStone(long.Parse(number), 1);
         }
 
         return data;
@@ -29,7 +26,15 @@ public class InputReader
 
 public class Data
 {
-    public List<Stone> Stones { get; set; } = new();
+    public Dictionary<long, long> Stones = new();
+
+    public void AddStone(long number, long count)
+    {
+        if (!this.Stones.TryAdd(number, count))
+        {
+            this.Stones[number] += count;
+        }
+    }
 
     public void Simulate(int count)
     {
@@ -41,64 +46,56 @@ public class Data
 
     public void Step(int step = 0)
     {
-        var length = this.Stones.Count;
-        var stones = this.Stones.ToList();
-        
-        for (var i = 0; i < stones.Count; i++)
+        var stones = new Dictionary<long, long>(this.Stones);
+        this.Stones = new Dictionary<long, long>();
+
+        foreach (var stone in stones)
         {
-            var percentage = (double)i / length * 100;
-            
-            Console.Write("\rStep: {0}: {1} / {2}  ({3}%)", step, i, length, percentage);
-            this.Step(stones[i]);
+            this.Step(stone.Key, stone.Value);
         }
     }
 
-    public void Step(Stone stone)
+    public void Step(long number, long count)
     {
-        if (stone.Number == 0)
+        if (number == 0)
         {
-            this.Handle0Rule(stone);
+            this.Handle0Rule(number, count);
             return;
         }
 
-        if (stone.HasEvenNumberOfDigits)
+        if (number.ToString().Length % 2 == 0)
         {
-            this.HandleEvenRule(stone);
+            this.HandleEvenRule(number, count);
             return;
         }
 
-        this.HandleMultiplyRule(stone);
+        this.HandleMultiplyRule(number, count);
     }
 
-    private void Handle0Rule(Stone stone)
+    private void Handle0Rule(long number, long count)
     {
-        stone.Number = 1;
+        this.AddStone(1, count);
     }
 
-    private void HandleEvenRule(Stone stone)
+    private void HandleEvenRule(long number, long count)
     {
-        var length = stone.Number.ToString().Length;
-        var leftNumber = long.Parse(stone.Number.ToString().Substring(0, length / 2));
-        var rightNumber = long.Parse(stone.Number.ToString().Substring(length / 2));
+        var stringNumber = number.ToString();
+        var length = stringNumber.Length;
+        var leftNumber = long.Parse(stringNumber.Substring(0, length / 2));
+        var rightNumber = long.Parse(stringNumber.Substring(length / 2));
 
-        stone.Number = rightNumber;
-
-        var index = this.Stones.IndexOf(stone);
-
-        this.Stones.Insert(index, new Stone
-        {
-            Number = leftNumber,
-        });
+        this.AddStone(leftNumber, count);
+        this.AddStone(rightNumber, count);
     }
 
-    private void HandleMultiplyRule(Stone stone)
+    private void HandleMultiplyRule(long number, long count)
     {
-        stone.Number *= 2024;
+        this.AddStone(number * 2024, count);
     }
 
-    public string GetPrint()
+    public long GetCount()
     {
-        return string.Join(" ", this.Stones.Select(x => x.Number));
+        return this.Stones.Sum(stone => stone.Value);
     }
 }
 
